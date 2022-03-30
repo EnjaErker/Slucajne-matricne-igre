@@ -166,3 +166,15 @@ ggplot(podatki,aes(s,r,group=p))+geom_point()+ geom_point(aes(colour = factor(p)
   labs(color  ="Dolžina intervala",x='Število simulacij',y='Razlika')+geom_line(data=subset(podatki,p==1),color="cadetblue",lwd=1)+
   geom_line(data=subset(podatki,p==5),color="cadetblue1",lwd=1)+geom_line(data=subset(podatki,p==10),color="cadetblue3",lwd=1)+
   scale_color_manual(name = "Parameter", labels = c("0.2", "0.5","0.8"), values = c("cadetblue", "cadetblue1","cadetblue3"))
+
+# Hi^2 porazdelitev
+x <- c(100,1000,5000,10000)
+y1 <- razlike('Chi',1)
+y2 <- razlike('Chi',2)
+y3 <- razlike('Chi',3)
+podatki <- data.frame(c(x,x,x),c(1,1,1,1,5,5,5,5,10,10,10,10),c(y1,y2,y3))
+colnames(podatki) <- c("s","p","r")
+ggplot(podatki,aes(s,r,group=p))+geom_point()+ geom_point(aes(colour = factor(p)),size=1)+ theme(legend.position = "top")+
+  labs(color  ="Dolžina intervala",x='Število simulacij',y='Razlika')+geom_line(data=subset(podatki,p==1),color="cadetblue",lwd=1)+
+  geom_line(data=subset(podatki,p==5),color="cadetblue1",lwd=1)+geom_line(data=subset(podatki,p==10),color="cadetblue3",lwd=1)+
+  scale_color_manual(name = "Število prostostnih stopenj", labels = c("1", "2","3"), values = c("cadetblue", "cadetblue1","cadetblue3"))
