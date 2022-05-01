@@ -19,9 +19,6 @@ Generator <- function(porazdelitev,parameter_1,parameter_2) {
     a <- parameter_1
     b <- parameter_2 
     M <- matrix(c(rgamma(1,a,b), rgamma(1,a,b), rgamma(1,a,b), rgamma(1,a,b)),nrow=2,ncol=2,byrow = TRUE) }
-  if (porazdelitev == "Chi") {
-    df <- parameter_1
-    M <- matrix(c(rchisq(1,df), rchisq(1,df), rchisq(1,df), rchisq(1,df)),nrow=2,ncol=2,byrow = TRUE)}
   if (porazdelitev == "Ber"){
     p <- parameter_1 
     M <- matrix(c(rbinom(1,1,p), rbinom(1,1,p), rbinom(1,1,p), rbinom(1,1,p)),nrow=2,ncol=2,byrow = TRUE)}
@@ -51,7 +48,6 @@ Vrednost_povprecne_igre <- function(porazdelitev,parameter_1,parameter_2){
   if (porazdelitev == "Student"){E <- 0}
   if (porazdelitev == "N"){E <- parameter_1}
   if (porazdelitev == "Gamma"){E <- parameter_1/parameter_2}
-  if (porazdelitev == "Chi") {E <- parameter_1}
   if (porazdelitev == "Ber"){E <- parameter_1}
   if (porazdelitev == "Geo"){E <-  1/parameter_1}
   return(E)}
@@ -162,18 +158,6 @@ ggplot(podatki,aes(s,r,group=p))+geom_point()+ geom_point(aes(colour = factor(p)
   geom_line(data=subset(podatki,p==5),color="cadetblue1",lwd=1)+geom_line(data=subset(podatki,p==10),color="cadetblue3",lwd=1)+
   scale_color_manual(name = "Parameter", labels = c("0.2", "0.5","0.8"), values = c("cadetblue", "cadetblue1","cadetblue3"))
 
-# Hi^2 porazdelitev
-x <- c(100,1000,5000,10000)
-y1 <- razlike('Chi',1)
-y2 <- razlike('Chi',2)
-y3 <- razlike('Chi',3)
-podatki <- data.frame(c(x,x,x),c(1,1,1,1,5,5,5,5,10,10,10,10),c(y1,y2,y3))
-colnames(podatki) <- c("s","p","r")
-ggplot(podatki,aes(s,r,group=p))+geom_point()+ geom_point(aes(colour = factor(p)),size=1)+ theme(legend.position = "top")+
-  labs(color  ="Dolina intervala",x='Število simulacij',y='Razlika')+geom_line(data=subset(podatki,p==1),color="cadetblue",lwd=1)+
-  geom_line(data=subset(podatki,p==5),color="cadetblue1",lwd=1)+geom_line(data=subset(podatki,p==10),color="cadetblue3",lwd=1)+
-  scale_color_manual(name = "Število prostostnih stopenj", labels = c("1", "2","3"), values = c("cadetblue", "cadetblue1","cadetblue3"))
-
 # Izraèun vrednosti za izris histogramov ###############################################################################################
 
 Vrednosti <- function(stevilo_simulacij,porazdelitev,parameter_1,parameter_2){
@@ -193,10 +177,8 @@ v_4 <- Vrednosti(10000,'Ber',0.2)
 v_44 <- Vrednosti(10000,'Ber',0.6)
 v_5 <- Vrednosti(10000,'Geo',0.5)
 v_55 <- Vrednosti(10000,'Geo',0.9)
-v_6 <- Vrednosti(10000,'Chi',2)
-v_66 <- Vrednosti(10000,'Chi',3)
-v_7 <- Vrednosti(10000,'U',0,10)
-v_77 <- Vrednosti(10000,'U',0,1)
+v_6 <- Vrednosti(10000,'U',0,10)
+v_66 <- Vrednosti(10000,'U',0,1)
 
 hist(v_1, xlab="Vrednost igre", border="cadetblue",  col="cadetblue1",xlim=c(-3,3),ylab="Število iger",main="",breaks=36)
 teoreticna_vrednost_1 <- Vrednost_povprecne_igre('N',0,1)
@@ -225,7 +207,7 @@ teoreticna_vrednost_33 <- Vrednost_povprecne_igre('Gamma',0.5,1)
 abline(v=mean(v_33),col="black",lwd=2)
 abline(v=teoreticna_vrednost_33,col="red",lwd=2)
 
-hist(v_4, xlab="Vrednost igre", border="cadetblue",  col="cadetblue3",xlim=c(0,1),ylab="Število iger",main="",breaks=4)
+hist(v_4, xlab="Vrednost igre", border="cadetblue",  col="cadetblue1",xlim=c(0,1),ylab="Število iger",main="",breaks=4)
 teoreticna_vrednost_4 <- Vrednost_povprecne_igre('Ber',0.2)
 abline(v=mean(v_4),col="black",lwd=2)
 abline(v=teoreticna_vrednost_4,col="red",lwd=2)
@@ -234,7 +216,7 @@ teoreticna_vrednost_44 <- Vrednost_povprecne_igre('Ber',0.6)
 abline(v=mean(v_44),col="black",lwd=2)
 abline(v=teoreticna_vrednost_44,col="red",lwd=2)
 
-hist(v_5, xlab="Vrednost igre", border="cadetblue",  col="cadetblue1",ylab="Število iger",main="",breaks=80)
+hist(v_5, xlab="Vrednost igre", border="cadetblue",  col="cadetblue3",ylab="Število iger",main="",breaks=80)
 teoreticna_vrednost_5 <- Vrednost_povprecne_igre('Geo',0.5)
 abline(v=mean(v_5),col="black",lwd=2)
 abline(v=teoreticna_vrednost_5,col="red",lwd=2)
@@ -244,19 +226,24 @@ abline(v=mean(v_55),col="black",lwd=2)
 abline(v=teoreticna_vrednost_55,col="red",lwd=2)
 
 hist(v_6, xlab="Vrednost igre", border="cadetblue",  col="cadetblue3",xlim=c(0,10),ylab="Število iger",main="",breaks=60)
-teoreticna_vrednost_6 <- Vrednost_povprecne_igre('Chi',2)
+teoreticna_vrednost_6 <- Vrednost_povprecne_igre('U',0,10)
 abline(v=mean(v_6),col="black",lwd=2)
 abline(v=teoreticna_vrednost_6,col="red",lwd=2)
-hist(v_66, xlab="Vrednost igre", border="cadetblue",  col="cadetblue3",xlim=c(0,14),ylab="Število iger",main="",breaks=60)
-teoreticna_vrednost_66 <- Vrednost_povprecne_igre('Chi',3)
+hist(v_66, xlab="Vrednost igre", border="cadetblue",  col="cadetblue3",xlim=c(0,1),ylab="Število iger",main="",breaks=60)
+teoreticna_vrednost_66 <- Vrednost_povprecne_igre('U',0,1)
 abline(v=mean(v_66),col="black",lwd=2)
 abline(v=teoreticna_vrednost_66,col="red",lwd=2)
 
-hist(v_7, xlab="Vrednost igre", border="cadetblue",  col="cadetblue1",xlim=c(0,10),ylab="Število iger",main="",breaks=60)
-teoreticna_vrednost_7 <- Vrednost_povprecne_igre('U',0,10)
-abline(v=mean(v_7),col="black",lwd=2)
-abline(v=teoreticna_vrednost_7,col="red",lwd=2)
-hist(v_77, xlab="Vrednost igre", border="cadetblue",  col="cadetblue1",xlim=c(0,1),ylab="Število iger",main="",breaks=60)
-teoreticna_vrednost_77 <- Vrednost_povprecne_igre('U',0,1)
-abline(v=mean(v_77),col="black",lwd=2)
-abline(v=teoreticna_vrednost_77,col="red",lwd=2)
+# Meritev èasovne zahtevnosti algoritmov ###########################################################################################
+
+start_time <- Sys.time()
+y2 <- razlike('Student',5)
+end_time <- Sys.time()
+cas_1 <- end_time - start_time
+
+start_time <- Sys.time()
+v_55 <- Vrednosti(10000,'Geo',0.9)
+end_time <- Sys.time()
+cas_2 <- end_time - start_time
+
+skupni_cas <- cas_1 + cas_2
